@@ -47,8 +47,9 @@ article {
 div#items {
 	font-family: san-serif;
 	width: auto;
+	height: auto;
 	margin: auto;
-	padding: 10px;
+	padding: 5px;
 	outline: dashed;
 	color: navy;
 	font-weight: normal;
