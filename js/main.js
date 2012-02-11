@@ -88,7 +88,7 @@ window.addEventListener("DOMContentLoaded", function()
 		//Gather up all our form field values and store in object.
 		//Object properties contain array with form label and input value
 		var item 			= {};
-			item.mtype 		= ["Media Type:",$("mtype").value];
+			item.mtype 		= ["Media Type:", $("mtype").value],
 			item.mname 		= ["Media Name:", $("mname").value];
 			item.mdate  	= ["Date:", $("mdate").value];
 			item.mrating 	= ["Rating:", $("mrating").value];
@@ -104,6 +104,7 @@ window.addEventListener("DOMContentLoaded", function()
 	
 	function getData()
 	{
+		//Write Data from Local Storage to the Browser
 		toggleControls("on");
 		if(localStorage.length === 0)
 		{
@@ -120,21 +121,82 @@ window.addEventListener("DOMContentLoaded", function()
 		for(var i=0, len=localStorage.length; i<len; i++)
 		{
 			var makeli = document.createElement("li");
+			var linksLi = document.createElement("li");
 			makeList.appendChild(makeli);
-			var key = localStorage.key[i];
+			var key = localStorage.key(i);
 			var value = localStorage.getItem(key);
 			//convert string back to object so it won't be one long string
 			var obj = JSON.parse(value);
 			var makeSubList = document.createElement("ul");
+			var makeSubListSeparator = document.createElement("hr");
 			makeli.appendChild(makeSubList);
+			makeli.appendChild(makeSubListSeparator);
 			for(var n in obj)
 			{
 				var makeSubli = document.createElement("li");
 				makeSubList.appendChild(makeSubli);
-				var optSubText = obj[n][0]+" "+obj[n][1];
+				//0 is label, 1 is the value
+				var optSubText = obj[n][0] + " " + obj[n][1];
 				makeSubli.innerHTML = optSubText;
+				makeSubli.appendChild(linksLi);
 			}
+			//add edit and delete button from function
+			//for each item in local storage.
+			makeItemLinks(localStorage.key(i), linksLi);
 		}
+	}
+	
+	//Make Item Links
+	//Create Edit and Delete links for each stored item when displayed
+	function makeItemLinks(key, linksLi)
+	{
+		//add edit single item link
+		var editLink = document.createElement("a");
+		editLink.href = "#";
+		editLink.key = key;
+		var editText = "EDIT";
+		editLink.addEventListener("click", editItem);
+		editLink.innerHTML = editText;
+		linksLi.appendChild(editLink);
+		
+		//add line break between edit / link text links
+		var breakTag = document.createElement("br");
+		linksLi.appendChild(breakTag);
+		
+		//add delete single item link
+		var deleteLink = document.createElement("a");
+		deleteLink.href = "#";
+		deleteLink.key = key;
+		var deleteText = "DELETE";
+		//deleteLink.addEventListener("click", deleteItem);
+		deleteLink.innerHTML = deleteText;
+		linksLi.appendChild(deleteLink);
+	}
+	
+	function editItem()
+	{
+		//Grab data from Item from local storage.
+		var value = localStorage.getItem(this.key);
+		var item = JSON.parse(value);
+		//show form to edit iem
+		toggleControls("off");
+		
+		//populate form fields with current local storage values
+		//1 is value, 0 is label
+		$("mtype").value = item.mtype(1);
+		$("mname").value = item.mname(1);
+		$("mdate").value = item.mdate(1);
+		$("mrating").value = item.mrating(1);
+		var radios = document.forms[0].mtopics;
+		for(var i=0, i<radios.length, i++)
+		{
+			if(radios(i).value == "School" && obj.mtopics(1) == "School"
+			{
+				radios(i).setAttribute("checked", "checked");
+			}else if(radios(i).value == "
+		}
+		$("mtags").value = item.mtags(1);
+		$("mcomments").value = item.mcomments(1);
 	}
 	
 	function clearLocal()

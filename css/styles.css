@@ -46,6 +46,7 @@ article {
 
 div#items {
 	font-family: san-serif;
+	display: block;
 	width: auto;
 	height: auto;
 	margin: auto;
