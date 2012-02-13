@@ -64,7 +64,7 @@ window.addEventListener("DOMContentLoaded", function()
 				$("addNew").style.display = "inline";
 				break;
 			case "off":
-				$("mediaform").style.display = "block";
+				$("mediaForm").style.display = "block";
 				$("clear").style.display = "inline";
 				$("displayLink").style.display = "inline";
 				$("addNew").style.display = "none";
@@ -154,7 +154,7 @@ window.addEventListener("DOMContentLoaded", function()
 		var editLink = document.createElement("a");
 		editLink.href = "#";
 		editLink.key = key;
-		var editText = "EDIT";
+		var editText = "Edit Media";
 		editLink.addEventListener("click", editItem);
 		editLink.innerHTML = editText;
 		linksLi.appendChild(editLink);
@@ -167,7 +167,7 @@ window.addEventListener("DOMContentLoaded", function()
 		var deleteLink = document.createElement("a");
 		deleteLink.href = "#";
 		deleteLink.key = key;
-		var deleteText = "DELETE";
+		var deleteText = "Delete Media";
 		//deleteLink.addEventListener("click", deleteItem);
 		deleteLink.innerHTML = deleteText;
 		linksLi.appendChild(deleteLink);
@@ -178,25 +178,50 @@ window.addEventListener("DOMContentLoaded", function()
 		//Grab data from Item from local storage.
 		var value = localStorage.getItem(this.key);
 		var item = JSON.parse(value);
+		
 		//show form to edit iem
 		toggleControls("off");
 		
 		//populate form fields with current local storage values
 		//1 is value, 0 is label
-		$("mtype").value = item.mtype(1);
-		$("mname").value = item.mname(1);
-		$("mdate").value = item.mdate(1);
-		$("mrating").value = item.mrating(1);
+		$("mtype").value = item.mtype[1];
+		$("mname").value = item.mname[1];
+		$("mdate").value = item.mdate[1];
+		$("mrating").value = item.mrating[1];
+		// handle radio buttons
 		var radios = document.forms[0].mtopics;
-		for(var i=0, i<radios.length, i++)
+		for(var i=0; i<radios.length; i++)
 		{
-			if(radios(i).value == "School" && obj.mtopics(1) == "School"
+			if(radios(i).value == "School" && item.mtopics(1) == "School")
 			{
 				radios(i).setAttribute("checked", "checked");
-			}else if(radios(i).value == "
+			}else if(radios(i).value == "Work" && item.mtopics(1) == "Work")
+			{
+				radios(i).setAttribute("checked", "checked");
+			}else if(radios(i).value == "Personal" && item.mtopics(1) == "Personal")
+			{
+				radios(i).setAttribute("checked", "checked");
+			}
 		}
-		$("mtags").value = item.mtags(1);
-		$("mcomments").value = item.mcomments(1);
+		/*
+		// handle yes / no check box
+		if(obj.favorite(1) == "Yes")
+		{
+			$("fav").setAttributes("checked", "checked");
+		}
+		*/
+		$("mtags").value = item.mtags[1];
+		$("mcomments").value = item.mcomments[1];
+		
+		// Remove the initial listener from the input 'save media' button
+		save.removeEventListener("click", storeData);
+		// Change Submit button value to day Edit Button
+		$("submit").value = "Edit Media";
+		var editSubmit = $("submit");
+		// Save the key value established in this Function as a property of the editSubmit event
+		// so we can use the value when we save the data we edited.
+		editSubmit.addEventListener("click", validate);
+		editSubmit.key = this.key;
 	}
 	
 	function clearLocal()
@@ -214,10 +239,70 @@ window.addEventListener("DOMContentLoaded", function()
 		}
 	}
 	
+	function validate(e)
+	{
+		//
+		var getMtype = $("mtype");
+		var getMname = $("mname");
+		var getMdate = $("mdate");
+		
+		//Get error messages
+		var messageAry = [];
+		//Check Type Validation
+		if(getMtype.value === "-- Choose Media Type--")
+		{
+			var mtypeError = "Please choose a Media Type";
+			getMtype.style.border = "1px solid red";
+			messageAry.push(mtypeError);
+		}
+		
+		// Media Name Validation
+		if(getMname.value === "")
+		{
+			var mnameError = "Please enter a Media Name";
+			getMname.style.border = "1px solid red";
+			messageAry.push(mnameError);
+		}
+		
+		// Media Date Validation
+		if(getMdate.value === "")
+		{
+			var mdateError = "Please enter a Media Date";
+			getMdate.style.border = "1px solid red";
+			messageAry.push(mdateError);
+		}
+		
+		/*
+		// Email Validation
+		var re = /*\w+[|.*]?\w+]*@\w+(|\-|?\w+]*{\.\w{w(2:3))*$/;
+		if(re.exec(getEmail.value)))
+		{
+			var emailError = "Enter emaiol";
+			getEmail.style.border = "1px solid red";
+			messageAry.push(emailError);
+		}
+		*/
+		
+		//if errors, show them on screen
+		if(messageAry.length >= 1)
+		{
+			for(var i=0, j=messageAry.length; i<j; i++)
+			{
+				var txt = document.createElement("li");
+				txt.innerHTML = messageAry(i);
+				errMsg.appendChild(txt);
+			}
+			
+		}
+		e.preventDefault();
+		return false;
+	}
+	
 	// Variable defaults
 	// store values of dropdown in array
 	var mediaGroups = ["-- Choose Media Type--", "book", "document", "music", "movie", "pdf", "doc", "audio", "video"],
-		mtopicValue;
+		mtopicValue,
+		errMsg = $("errors");
 	makeMediaTypes();
 	
 	// Set Link & Submit Click Events
@@ -226,7 +311,6 @@ window.addEventListener("DOMContentLoaded", function()
 	var clearLink = $("clear");
 	clearLink.addEventListener("click", clearLocal);
 	var save = $("submit");
-	save.addEventListener("click", saveMedia);
-	
-});
-
+	//save.addEventListener("click", saveMedia);
+	save.addEventListener("click", validate);
+};

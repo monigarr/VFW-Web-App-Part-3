@@ -40,18 +40,20 @@
 				<form action="additem.html" method="post" id="mediaForm">
 					<fieldset id="mediaFieldSet">
 						<legend>MEDIA INFO</legend>
+						<span>* fields are required.</span>
+						<ul id="errors"></ul>
 							<ul id="media">
-								<li id="select"><label for="mtype">Media Type:</label><br /></li>
-								<li id="mname"><label for="mname">Media Name: </label> <input type="text" id="mname" onfocus="styleMedia();" /></li>
-								<li id="mdate"><label for="mdate">Media Date: </label> <input type="date" id="mdate" placeholder="day/month/year" onfocus="styleField();" /></li>
-								<li id="mrating"><label for="mrating">Media Rating: </label>1<input type="range" min="1" max="10" name="rating" id="mrating" onfocus="styleField();"/>10</li>
-								<li id="mtopics"><label for="mtopic">Media Topic:</label>  
+								<li id="select"><label for="mtype">* Media Type:</label><br /></li>
+								<li id="medianame"><label for="mname">* Media Name: </label> <input type="text" id="mname" onfocus="styleMedia();" /></li>
+								<li id="mediadate"><label for="mdate">* Media Date: </label> <input type="date" id="mdate" placeholder="day/month/year" onfocus="styleField();" /></li>
+								<li id="mediarating"><label for="mrating">Media Rating: </label>1<input type="range" min="1" max="10" name="rating" id="mrating" onfocus="styleField();"/>10</li>
+								<li id="mediatopics"><label for="mtopic">Media Topic:</label>  
 									<input type="radio" value="personal" id="personal" name="mtopics" /><label for="personal">Personal</label>
 									<input type="radio" value="school" id="school" name="mtopics" /><label for="school">School</label>
 									<input type="radio" value="work" id="work" name="mtopics" /><label for="work">Work</label>
 									</li>
-								<li id="mtags"><label for="mtags">Media Tags:</label> <input type="text" id="mtags" /></li>
-								<li id="mcomments"><label for="mcomments">Media Comments:</label> <textarea id="mcomments" /></textarea></li>
+								<li id="mediatags"><label for="mtags">Media Tags:</label> <input type="text" id="mtags" /></li>
+								<li id="mediacomments"><label for="mcomments">Media Comments:</label> <textarea id="mcomments" /></textarea></li>
 								<input type="submit" value="Save Media" id="submit" /> <br />
 							</ul>
 					</fieldset>
