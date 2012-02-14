@@ -53,6 +53,7 @@ window.addEventListener("DOMContentLoaded", function()
 		}
 	}
 	
+	//Turn nav links off / on
 	function toggleControls(n)
 	{
 		switch(n)
@@ -75,13 +76,25 @@ window.addEventListener("DOMContentLoaded", function()
 		}
 	}
 	
-	function saveMedia()
+	function saveMedia(key)
 	{
-		//can only store strings. arrays will be converted to strings
-		//localStorage.setItem("test", "hello");
-		//alert(localStorage.key(0));
-		var id 				= Math.floor(Math.random()*10000001);
-		
+		//if no key, this is brand new item 
+		//so we need new key
+		if(!key)
+		{
+			//can only store strings. arrays will be converted to strings
+			//localStorage.setItem("test", "hello");
+			//alert(localStorage.key(0));
+			var id 				= Math.floor(Math.random()*10000001);
+		}
+		else
+		{
+			//set the id to existing key we're editing
+			//so it will save over the data
+			//key is same key that's passed from the editSubmit event handler
+			//to the validate function and then passed here into storeData() function
+			id = key;
+		}
 		// run function to find Selected Radio Button
 		getSelectedRadio();
 		
@@ -106,6 +119,7 @@ window.addEventListener("DOMContentLoaded", function()
 	{
 		//Write Data from Local Storage to the Browser
 		toggleControls("on");
+		
 		if(localStorage.length === 0)
 		{
 			alert("No Data in local Storage");
@@ -116,7 +130,7 @@ window.addEventListener("DOMContentLoaded", function()
 		var makeList = document.createElement("ul");
 		makeDiv.appendChild(makeList);
 		document.body.appendChild(makeDiv);
-		$("items").style.display = "display";
+		$("items").style.display = "black";
 		
 		for(var i=0, len=localStorage.length; i<len; i++)
 		{
@@ -168,7 +182,7 @@ window.addEventListener("DOMContentLoaded", function()
 		deleteLink.href = "#";
 		deleteLink.key = key;
 		var deleteText = "Delete Media";
-		//deleteLink.addEventListener("click", deleteItem);
+		deleteLink.addEventListener("click", deleteItem);
 		deleteLink.innerHTML = deleteText;
 		linksLi.appendChild(deleteLink);
 	}
@@ -214,7 +228,7 @@ window.addEventListener("DOMContentLoaded", function()
 		$("mcomments").value = item.mcomments[1];
 		
 		// Remove the initial listener from the input 'save media' button
-		save.removeEventListener("click", storeData);
+		save.removeEventListener("click", saveMedia);
 		// Change Submit button value to day Edit Button
 		$("submit").value = "Edit Media";
 		var editSubmit = $("submit");
@@ -222,6 +236,21 @@ window.addEventListener("DOMContentLoaded", function()
 		// so we can use the value when we save the data we edited.
 		editSubmit.addEventListener("click", validate);
 		editSubmit.key = this.key;
+	}
+	
+	function deleteItem()
+	{
+		var ask = confirm("Are you sure you want to delete this media?");
+		if(ask)
+		{
+			localStorage.removeItem(this.key);
+			alert("Media was Deleted");
+			window.location.reload();
+		}
+		else
+		{
+			alert("Media was Not Deleted");
+		}
 	}
 	
 	function clearLocal()
@@ -241,10 +270,16 @@ window.addEventListener("DOMContentLoaded", function()
 	
 	function validate(e)
 	{
-		//
+		//Define elements we want to check
 		var getMtype = $("mtype");
 		var getMname = $("mname");
 		var getMdate = $("mdate");
+		
+		//Reset error messages
+		errMsg.innerHTML = "";
+		getMtype.style.border = "1px solid black";
+		getMname.style.border = "1px solid black";
+		getMdate.style.border = "1px solid black";
 		
 		//Get error messages
 		var messageAry = [];
@@ -277,7 +312,7 @@ window.addEventListener("DOMContentLoaded", function()
 		var re = /*\w+[|.*]?\w+]*@\w+(|\-|?\w+]*{\.\w{w(2:3))*$/;
 		if(re.exec(getEmail.value)))
 		{
-			var emailError = "Enter emaiol";
+			var emailError = "Enter email";
 			getEmail.style.border = "1px solid red";
 			messageAry.push(emailError);
 		}
@@ -292,10 +327,16 @@ window.addEventListener("DOMContentLoaded", function()
 				txt.innerHTML = messageAry(i);
 				errMsg.appendChild(txt);
 			}
-			
+			e.preventDefault();
+			return false;
+		}else
+		{
+			//If everything is good, save the data
+			//Send key value that came from editData function
+			//Remember key value was passed thru editSubmit even listener 
+			//as a property.
+			saveMedia(this.key);
 		}
-		e.preventDefault();
-		return false;
 	}
 	
 	// Variable defaults
@@ -303,6 +344,7 @@ window.addEventListener("DOMContentLoaded", function()
 	var mediaGroups = ["-- Choose Media Type--", "book", "document", "music", "movie", "pdf", "doc", "audio", "video"],
 		mtopicValue,
 		errMsg = $("errors");
+		
 	makeMediaTypes();
 	
 	// Set Link & Submit Click Events
@@ -313,4 +355,4 @@ window.addEventListener("DOMContentLoaded", function()
 	var save = $("submit");
 	//save.addEventListener("click", saveMedia);
 	save.addEventListener("click", validate);
-};
+});
