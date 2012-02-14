@@ -163,7 +163,11 @@ input[type=submit] {
 
 /*LISTS*/
 
-ul { 
+#errors { 
+	color: #000000;
+	background-color: orange;
+	text-decoration: none;
+	display: block;
 } 
 
 #numlist { 

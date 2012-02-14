@@ -277,13 +277,14 @@ window.addEventListener("DOMContentLoaded", function()
 		
 		//Reset error messages
 		errMsg.innerHTML = "";
-		getMtype.style.border = "1px solid black";
-		getMname.style.border = "1px solid black";
-		getMdate.style.border = "1px solid black";
+			getMtype.style.border = "1px solid black";
+			getMname.style.border = "1px solid black";
+			getMdate.style.border = "1px solid black";
 		
 		//Get error messages
 		var messageAry = [];
 		//Check Type Validation
+		
 		if(getMtype.value === "-- Choose Media Type--")
 		{
 			var mtypeError = "Please choose a Media Type";
