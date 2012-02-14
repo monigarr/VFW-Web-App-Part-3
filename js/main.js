@@ -287,17 +287,15 @@ window.addEventListener("DOMContentLoaded", function()
 		
 		if(getMtype.value === "-- Choose Media Type--")
 		{
-			var mtypeError = "Please choose a Media Type";
-			getMtype.style.border = "1px solid red";
-			messageAry.push(mtypeError);
+			alert("Choose Media Type");
+			window.location.reload();
 		}
 		
 		// Media Name Validation
 		if(getMname.value === "")
 		{
-			var mnameError = "Please enter a Media Name";
-			getMname.style.border = "1px solid red";
-			messageAry.push(mnameError);
+			alert("Please enter a Name for your Media");
+			window.location.reload();
 		}
 		
 		// Media Date Validation
